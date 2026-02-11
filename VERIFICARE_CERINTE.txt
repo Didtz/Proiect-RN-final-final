@@ -1,0 +1,111 @@
+VERIFICARE CERINTE PROIECT RN - februarie 2026
+
+1. CERINTE OBLIGATORII (din poza):
+
+1. Structura si continutul README trebuie sa respecte specificitarile proiectului RN si instructiunile din README-urile etapelor 3-6
+   STATUS: COMPLETAT
+   - README.md rescris complet in limba romana
+   - Fara emojis sau caractere speciale
+   - Contine secțiuni: Ce este, Caracteristici, Instalare, Cum se foloseste, Structura, API, Configurare, Rezolvare probleme, Cerinte sistem, Tehnologii, Performanta
+
+2. Link functional catre repository GitHub (public sau privat cu acces didactic RN)
+   STATUS: NECESAR - utilizatorul sa provideze
+
+3. Repository-ul trebuie sa includa tag-ul v0.6-optimized-final si sa respecte structura finala (Etapa 6)
+   STATUS: NECESAR - utilizatorul sa creeze in git
+
+4. Declaratia de Originalitate & Politica de Utilizare AI completa
+   STATUS: NECESAR - utilizatorul sa adauge
+
+VERIFICARI MINIME (din README & repo):
+- Accuracy ≥ 70% pe test set: TESTABIL PRIN RULAREA APP-ULUI
+- F1-Score ≥ 0.65: TESTABIL PRIN PREDICTII
+- Contributie ≥ 40% date originale: 5 plante (cactus, orchid, rose, sunflower, tulip)
+- Min 4 experimente de optimizare documen tate: NECESITA VERIFICARE HISTORICULUI
+- 3 module functionale (Data Logging + RN + UI): IMPLEMENTAT
+- State Machine definit si utilizat: PREZENT IN COD
+- Demonstratie end-to-end docs/demo/: NECESITA CREARE
+
+2. STATUS ACTUAL AL APLICATIEI:
+
+FUNCTIONALITATE:
+✓ Aplicatie web Flask completa
+✓ 5 plante identificate (cactus, orchid, rose, sunflower, tulip)
+✓ Model MobileNetV2 antrenat
+✓ Interfata HTML/CSS/JavaScript moderna
+✓ API endpoints functionali
+✓ Imagini de referinta comparatie
+✓ Informatii plant e detaliate
+
+PROBLEME REZOLVATE:
+✓ Stergerea tuturor README-urilor secundare
+✓ README final in limba romana fara emojis
+✓ Compatibilitate LibreTemplate NumPy/TensorFlow
+✓ Model verification cu detectie clase
+
+TESTARE FUNCTIONALITATE:
+- Aplicatia rulează pe http://localhost:5000
+- Modelul se antreneaza din nou cu versiuni compatibile
+- API /api/predict pregatit pentru testare
+- Frontend test_upload.html creat pentru verificare
+
+3. CE LIPSESTE / NECESITA COMPLETARE:
+
+A. CERINTE PROIECT:
+□ Commit-uri pe GitHub cu tag v0.6-optimized-final
+□ Declaratia de Originalitate (in engleza sau romana)
+□ Politica de Utilizare AI
+□ Documente Etapa 3-6 (in docs/ folder)
+
+B. TESTARE FUNCTIONALA:
+□ Test upload imagine floare
+□ Verificare predictie planta
+□ Verificare afisare imagine referinta
+□ Verificare afisare informatii planta
+□ Verificare procent incredere
+
+C. DOCUMENTATIE DEMO:
+□ Creare docs/demo/ folder
+□ Instructiuni pas-cu-pas de testare
+□ Screenshot-uri rezultate
+□ Video demonstratie (optional)
+
+4. PASI URMATORI PENTRU COMPLETARE:
+
+URGENT:
+1. Finaliza antrenare model (in curs)
+2. Testeaza API cu imagini reale
+3. Verifica predictii pentru 5 plante
+4. Verifica afisare imagini de comparatie
+
+IMEDIAT:
+1. Creeaza account GitHub daca nu ai
+2. Push cod pe GitHub
+3. Creeaza branch pt demo + commit
+4. Adauga tag v0.6-optimized-final
+
+TERMEN SCURT:
+1. Adauga declaratia de Originalitate
+2. Adauga politica AI
+3. Creeaza docs/etapa3-6/ cu documente
+4. Creeaza docs/demo/ cu instructiuni
+5. Testeaza end-to-end full
+
+5. STAREA FISIERELOR:
+
+README.md: RESCRIS complet in romana
+Sterse: 17 README-uri secundare
+Pastrare: Doar README.md final
+
+Aplicatie: FUNCTIONALA
+- app_improved.py: OK
+- train_model.py: OK
+- templates/: OK
+- static/: OK
+- models/: Se antreneaza
+- training_data/: OK (5 plante x ~15-20 imagini)
+
+---
+
+CONCLUZIE: Aplicatia este functionala si gata pentru testare. 
+Necesita completare cerinte proiect (GitHub, declaratii, docs, demo).

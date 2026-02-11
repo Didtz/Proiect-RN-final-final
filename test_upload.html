@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Identificator Plante</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        button { padding: 10px 20px; cursor: pointer; }
+        #result { margin-top: 20px; padding: 20px; border: 1px solid #ccc; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Test Identificator Plante</h1>
+    <input type="file" id="file" accept="image/*">
+    <button onclick="testUpload()">Test Identificare</button>
+    
+    <div id="result"></div>
+    
+    <script>
+    function testUpload() {
+        const file = document.getElementById('file').files[0];
+        if (!file) {
+            document.getElementById('result').innerHTML = '<span class="error">Selectati un fisier</span>';
+            return;
+        }
+        
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        document.getElementById('result').innerHTML = 'Se testa...';
+        
+        fetch('/api/predict', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('result').innerHTML = `
+                    <h2 class="success">Succes!</h2>
+                    <p><strong>Planta:</strong> ${data.plant}</p>
+                    <p><strong>Nume Comun:</strong> ${data.common_name}</p>
+                    <p><strong>Incredere:</strong> ${(data.confidence * 100).toFixed(1)}%</p>
+                    <p><strong>Nume Stiintific:</strong> ${data.info.scientific_name || 'N/A'}</p>
+                    <p><strong>Dificultate:</strong> ${data.info.difficulty || 'N/A'}</p>
+                    <p><strong>Udare:</strong> ${data.info.watering || 'N/A'}</p>
+                    <p><strong>Lumina:</strong> ${data.info.light || 'N/A'}</p>
+                `;
+            } else {
+                document.getElementById('result').innerHTML = `<span class="error">Eroare: ${data.message || data.error}</span>`;
+            }
+        })
+        .catch(error => {
+            document.getElementById('result').innerHTML = `<span class="error">Eroare: ${error}</span>`;
+        });
+    }
+    </script>
+</body>
+</html>
