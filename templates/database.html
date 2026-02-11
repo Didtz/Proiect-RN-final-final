@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baza Date Plante - Identificator Plante</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">Identificator Plante</h1>
+            <ul class="nav-links">
+                <li><a href="/">Acasa</a></li>
+                <li><a href="/identify">Identificare</a></li>
+                <li><a href="/database">Baza Date</a></li>
+                <li><a href="/guide">Ghid Ingrijire</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="database-section">
+            <h2>Baza de Date Plante</h2>
+            <p>Explorati colectia noastra de plante</p>
+
+            <div class="plants-grid">
+                {% for plant_name, plant_info in plants.items() %}
+                <div class="plant-card">
+                    <div class="plant-header">
+                        <h3>{{ plant_name|title }}</h3>
+                        <span class="difficulty {{ plant_info.difficulty|lower }}">
+                            {{ plant_info.difficulty }}
+                        </span>
+                    </div>
+                    <p class="scientific-name">{{ plant_info.scientific_name }}</p>
+                    <p class="description">{{ plant_info.description }}</p>
+                    
+                    <div class="plant-details">
+                        <div class="detail">
+                            <strong>Udare:</strong>
+                            <p>{{ plant_info.watering }}</p>
+                        </div>
+                        <div class="detail">
+                            <strong>Lumina:</strong>
+                            <p>{{ plant_info.light }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Copyright 2025 Identificator Plante. Construit cu TensorFlow si Flask.</p>
+    </footer>
+</body>
+</html>

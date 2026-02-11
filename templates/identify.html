@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identificare Planta - Identificator Plante</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .comparison-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
+        .image-box {
+            flex: 1;
+            min-width: 250px;
+            max-width: 350px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .image-box h4 {
+            margin-top: 0;
+            color: #2c5f2d;
+            text-align: center;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .image-box img {
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            display: block;
+        }
+        
+        .plant-details {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .detail-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .detail-item {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 4px solid #2c5f2d;
+        }
+        
+        .detail-item strong {
+            display: block;
+            color: #2c5f2d;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        
+        .detail-item p {
+            margin: 0;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .confidence-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">Identificator Plante</h1>
+            <ul class="nav-links">
+                <li><a href="/">Acasa</a></li>
+                <li><a href="/identify">Identificare</a></li>
+                <li><a href="/database">Baza Date</a></li>
+                <li><a href="/guide">Ghid Ingrijire</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="identify-section">
+            <h2>Identificati o Planta</h2>
+            <p>Incarcati o fotografie cu planta dumneavoastra pentru a o identifica si a vedea o imagine de comparatie</p>
+
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📤</div>
+                <h3>Plasati imaginea aici sau faceti clic pentru a selecta</h3>
+                <p>Formate acceptate: PNG, JPG, JPEG, GIF</p>
+                <input type="file" id="fileInput" accept="image/*" hidden>
+            </div>
+
+            <div id="preview" class="preview-section" style="display: none;">
+                <img id="previewImage" src="" alt="Preview">
+                <button id="cancelBtn" class="btn btn-secondary">Schimba Imaginea</button>
+                <button id="predictBtn" class="btn btn-primary">Identificati Planta</button>
+            </div>
+
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Analizeaza imaginea...</p>
+            </div>
+
+            <div id="result" class="result-section" style="display: none;">
+                <div class="result-card">
+                    <h3 id="plantName"></h3>
+                    
+                    <div class="confidence-info">
+                        <p><strong>Increderea Identificarii:</strong></p>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" id="confidenceFill"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="comparison-container">
+                        <div class="image-box">
+                            <h4>Fotografia Dumneavoastra</h4>
+                            <img id="uploadedImage" src="" alt="Uploaded plant">
+                        </div>
+                        
+                        <div class="image-box">
+                            <h4>Proba de Referinta</h4>
+                            <img id="comparisonImage" src="" alt="Reference sample">
+                        </div>
+                    </div>
+                    
+                    <div class="plant-details">
+                        <h4 style="margin-top: 30px; color: #2c5f2d;">Informatii despre Planta</h4>
+                        
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <strong>Nume Comun:</strong>
+                                <p id="commonName"></p>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Nume Stiintific:</strong>
+                                <p id="scientificName"></p>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Cerinte de Lumina:</strong>
+                                <p id="light"></p>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Udare:</strong>
+                                <p id="watering"></p>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Nivel Dificultate:</strong>
+                                <p id="difficulty"></p>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Descriere:</strong>
+                                <p id="description"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="newIdentifyBtn" class="btn btn-primary" style="margin-top: 30px; width: 100%;">Identificati Alta Planta</button>
+                </div>
+            </div>
+
+            <div id="error" class="error-message" style="display: none;"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Copyright 2025 Identificator Plante. Construit cu TensorFlow si Flask.</p>
+    </footer>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const preview = document.getElementById('preview');
+        const previewImage = document.getElementById('previewImage');
+        const loading = document.getElementById('loading');
+        const result = document.getElementById('result');
+        const errorDiv = document.getElementById('error');
+        let uploadedImageData = null;
+
+        // Upload area click handler
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        // Drag and drop handlers
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.backgroundColor = '#f5f5f5';
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.backgroundColor = '#fff';
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.backgroundColor = '#fff';
+            handleFiles(e.dataTransfer.files);
+        });
+
+        // File input change handler
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length === 0) return;
+
+            const file = files[0];
+            if (!file.type.startsWith('image/')) {
+                showError('Please select an image file');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                uploadedImageData = e.target.result;
+                previewImage.src = e.target.result;
+                uploadArea.style.display = 'none';
+                preview.style.display = 'block';
+                result.style.display = 'none';
+                errorDiv.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        document.getElementById('cancelBtn').addEventListener('click', () => {
+            fileInput.value = '';
+            preview.style.display = 'none';
+            uploadArea.style.display = 'block';
+        });
+
+        document.getElementById('predictBtn').addEventListener('click', async () => {
+            const file = fileInput.files[0];
+            if (!file) {
+                showError('No file selected');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            preview.style.display = 'none';
+            loading.style.display = 'block';
+            errorDiv.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayResult(data);
+                } else {
+                    showError(data.message || 'Could not identify the plant. Please try another image.');
+                    preview.style.display = 'block';
+                }
+            } catch (error) {
+                showError('Error: ' + error.message);
+                preview.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+            }
+        });
+
+        document.getElementById('newIdentifyBtn').addEventListener('click', () => {
+            fileInput.value = '';
+            result.style.display = 'none';
+            uploadArea.style.display = 'block';
+            uploadedImageData = null;
+        });
+
+        function displayResult(data) {
+            const confidencePercent = (data.confidence * 100).toFixed(1);
+            
+            document.getElementById('plantName').textContent = (data.info.common_name || data.plant).toUpperCase();
+            
+            // Set confidence bar
+            const confidenceFill = document.getElementById('confidenceFill');
+            confidenceFill.style.width = confidencePercent + '%';
+            confidenceFill.textContent = confidencePercent + '%';
+            
+            // Set plant info
+            document.getElementById('commonName').textContent = data.info.common_name || data.plant.charAt(0).toUpperCase() + data.plant.slice(1);
+            document.getElementById('scientificName').textContent = data.info.scientific_name || 'N/A';
+            document.getElementById('light').textContent = data.info.light || 'Not specified';
+            document.getElementById('watering').textContent = data.info.watering || 'Not specified';
+            document.getElementById('difficulty').textContent = data.info.difficulty || 'Not specified';
+            document.getElementById('description').textContent = data.info.description || 'No description available';
+            
+            // Show uploaded image
+            if (uploadedImageData) {
+                document.getElementById('uploadedImage').src = uploadedImageData;
+            }
+            
+            // Show comparison image
+            if (data.comparison_image) {
+                document.getElementById('comparisonImage').src = data.comparison_image;
+            } else {
+                document.getElementById('comparisonImage').style.display = 'none';
+            }
+
+            result.style.display = 'block';
+        }
+
+        function showError(message) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+
+        // Drag and drop handlers
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.backgroundColor = '#f5f5f5';
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.backgroundColor = '#fff';
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.backgroundColor = '#fff';
+            handleFiles(e.dataTransfer.files);
+        });
+
+        // File input change handler
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length === 0) return;
+
+            const file = files[0];
+            if (!file.type.startsWith('image/')) {
+                showError('Please select an image file');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+                uploadArea.style.display = 'none';
+                preview.style.display = 'block';
+                result.style.display = 'none';
+                errorDiv.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        document.getElementById('cancelBtn').addEventListener('click', () => {
+            fileInput.value = '';
+            preview.style.display = 'none';
+            uploadArea.style.display = 'block';
+        });
+
+        document.getElementById('predictBtn').addEventListener('click', async () => {
+            const file = fileInput.files[0];
+            if (!file) {
+                showError('No file selected');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            preview.style.display = 'none';
+            loading.style.display = 'block';
+            errorDiv.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayResult(data);
+                } else {
+                    showError(data.message || 'Could not identify the plant');
+                    preview.style.display = 'block';
+                }
+            } catch (error) {
+                showError('Error: ' + error.message);
+                preview.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+            }
+        });
+
+        document.getElementById('newIdentifyBtn').addEventListener('click', () => {
+            fileInput.value = '';
+            result.style.display = 'none';
+            uploadArea.style.display = 'block';
+        });
+
+        function displayResult(data) {
+            document.getElementById('plantName').textContent = data.plant.toUpperCase();
+            document.getElementById('confidence').textContent = (data.confidence * 100).toFixed(1);
+            document.getElementById('scientificName').textContent = data.info.scientific_name || 'N/A';
+            document.getElementById('description').textContent = data.info.description || 'N/A';
+            document.getElementById('watering').textContent = data.info.watering || 'N/A';
+            document.getElementById('light').textContent = data.info.light || 'N/A';
+            document.getElementById('difficulty').textContent = data.info.difficulty || 'N/A';
+
+            result.style.display = 'block';
+        }
+
+        function showError(message) {
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

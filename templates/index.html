@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identificator Plante - Acasa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <h1 class="logo">Identificator Plante</h1>
+            <ul class="nav-links">
+                <li><a href="/">Acasa</a></li>
+                <li><a href="/identify">Identificare</a></li>
+                <li><a href="/database">Baza Date</a></li>
+                <li><a href="/guide">Ghid Ingrijire</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <section class="hero">
+            <h2>Bine ati venit la Identificator Plante</h2>
+            <p>Incarcati o imagine pentru a identifica plantele si obtine sfaturi de ingrijire</p>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📸</div>
+                <h3>Identificare Rapida</h3>
+                <p>Incarcati o fotografie si identificati instant specia plantei</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Baza de Date Plante</h3>
+                <p>Parcurgeti {{ plant_count }} plante cu informatii detaliate</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💧</div>
+                <h3>Sfaturi Ingrijire</h3>
+                <p>Aflati cerinte de apa, lumina si intretinere</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Usor de Utilizat</h3>
+                <p>Interfata simpla, nu necesita cunostinte tehnice</p>
+            </div>
+        </section>
+
+        <section class="cta">
+            <h3>Incepe Acum</h3>
+            <a href="/identify" class="btn btn-primary">Identificati o Planta</a>
+        </section>
+    </main>
+
+    <footer>
+        <p>Copright 2025 Identificator Plante. Construit cu TensorFlow si Flask.</p>
+    </footer>
+</body>
+</html>
